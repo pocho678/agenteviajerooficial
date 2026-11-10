@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Agente Viajero</title>
+<link href="css/base.css" rel="stylesheet"/>
+<link href="css/estructura.css" rel="stylesheet"/>
+<link href="css/visualizacion.css" rel="stylesheet"/>
+<link href="css/interfaz.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="contenedor">
+<header><div><h1>Agente Viajero</h1>
+<p class="descripcion">
+                Problema del Agente Viajero utilizando el algoritmo de fuerza bruta
+            </p></div><strong class="texto-paso" id="textoPaso">Paso 1 de 7</strong></header>
+<div class="progreso">
+<div class="paso activo" id="progreso1">
+<span>1</span>
+<p>Inicio</p>
+</div>
+<div class="linea"></div>
+<div class="paso" id="progreso2">
+<span>2</span>
+<p>Grafo</p>
+</div>
+<div class="linea"></div>
+<div class="paso" id="progreso3">
+<span>3</span>
+<p>Verificación</p>
+</div>
+<div class="linea"></div>
+<div class="paso" id="progreso4">
+<span>4</span>
+<p>Ciclos</p>
+</div>
+<div class="linea"></div>
+<div class="paso" id="progreso5">
+<span>5</span>
+<p>Matriz</p>
+</div>
+<div class="linea"></div>
+<div class="paso" id="progreso6">
+<span>6</span>
+<p>Fuerza bruta</p>
+</div>
+<div class="linea"></div>
+<div class="paso" id="progreso7">
+<span>7</span>
+<p>Resultado</p>
+</div>
+</div>
+<!-- PANTALLA 1: INICIO -->
+<section class="pantalla" id="pantallaInicio">
+<div class="tarjeta">
+<h2>Configuración del grafo</h2>
+
+<label for="cantidadNodos">
+                    Cantidad de nodos
+                </label>
+<div class="contador-nodos"><button type="button" id="btnMenosNodo" aria-label="Reducir nodos">−</button><input id="cantidadNodos" max="10" min="5" value="7" type="number" aria-label="Cantidad de nodos"/><button type="button" id="btnMasNodo" aria-label="Aumentar nodos">+</button></div>
+
+<div class="form-ejemplo" id="opcionCompleto"><label><input id="chkCompleto" type="checkbox"/> Conectar todos los nodos (solo para grafos no dirigidos)</label></div>
+<div class="form-ejemplo"><button class="secundario" id="btnCargarArchivo">Cargar grafo guardado</button><input accept=".json,application/json" hidden="" id="archivoGrafo" type="file"/></div>
+<div class="form-ejemplo"><label for="selectorEjemplo">O prueba un ejemplo:</label><select id="selectorEjemplo"></select><button class="secundario" id="btnEjemplo">Cargar ejemplo</button></div>
+<p id="mensaje"></p>
+<div class="botones">
+<button id="btnManual" class="eleccion-modo"><span class="eleccion-icono" aria-hidden="true">✎</span><span>Crear mi grafo</span><span class="eleccion-flecha" aria-hidden="true">→</span></button>
+<button id="btnAleatorio" class="eleccion-modo"><span class="eleccion-icono" aria-hidden="true">✧</span><span>Generar al azar</span><span class="eleccion-flecha" aria-hidden="true">→</span></button>
+</div>
+</div>
+</section>
+<!-- PANTALLA 2: CONSTRUCCIÓN -->
+<section class="pantalla oculta" id="pantallaConstruccion">
+<div class="tarjeta">
+<h2>Construcción del grafo</h2>
+<p class="texto-ayuda">
+
+                    Agrega las conexiones indicando el nodo de origen,
+                    nodo de destino y su peso.
+
+                    Si agregas nuevamente una arista existente,
+                    podrás actualizar su peso.
+
+                </p>
+<div class="form-arista">
+<div>
+<label for="nodoOrigen">
+                            Nodo de origen
+                        </label>
+<select id="nodoOrigen"></select>
+</div>
+<div>
+<label for="nodoDestino">
+                            Nodo de destino
+                        </label>
+<select id="nodoDestino"></select>
+</div>
+<div>
+<label for="pesoArista">
+                            Peso
+                        </label>
+<input id="pesoArista" inputmode="numeric" max="25" min="1" placeholder="Peso" step="0.01" type="number"/>
+</div>
+</div>
+<p id="mensajeArista"></p>
+<button id="btnAgregarArista">
+                    Agregar arista
+                </button>
+<h3>
+                    Aristas agregadas
+                </h3>
+<div class="canvas-contenedor"><canvas id="canvasConstruccion"></canvas></div>
+<p class="texto-ayuda">Arrastra los nodos para acomodarlos como quieras.</p>
+<div id="listaAristas"></div>
+<div class="botones">
+<button class="secundario" id="btnVolverInicio">
+                        Volver
+                    </button>
+<button id="btnVerificar">
+                        Verificar grafo
+                    </button>
+</div>
+</div>
+</section>
+<!-- PANTALLA 3: VERIFICACIÓN -->
+<section class="pantalla oculta" id="pantallaVerificacion">
+<div class="tarjeta">
+<h2>
+                    Verificación del grafo
+                </h2>
+<p class="texto-ayuda">
+
+                    El sistema verifica si el grafo creado
+                    permite realizar al menos un ciclo hamiltoniano.
+
+                </p>
+<div id="resultadoVerificacion"></div>
+<div class="botones">
+<button class="secundario" id="btnVolverConstruccion">
+                        Volver a modificar
+                    </button>
+
+<button id="btnContinuarGrafo">
+                        Continuar
+                    </button>
+</div>
+</div>
+</section>
+<!-- PANTALLA 4: GRAFO -->
+<section class="pantalla oculta" id="pantallaGrafo">
+<div class="tarjeta">
+<h2>
+                    Representación gráfica
+                </h2>
+<p class="texto-ayuda">
+
+                    Esta es la representación del grafo ponderado.
+
+                    Cada nodo está etiquetado y cada arista
+                    muestra su peso.
+
+                </p><div class="grafo-workbench"><div class="grafo-stage"><div class="grafo-toolbar"><div class="barra-identidad"><strong>Mapa de conexiones</strong><span>Arrastra los nodos para organizar el recorrido</span></div><button type="button" class="herramienta-btn" id="btnGenerarOtroGrafo" hidden>Generar otro grafo</button><button class="herramienta-btn" id="btnRestaurarPosiciones" type="button" title="Volver a las coordenadas aleatorias originales">Restablecer posiciones</button><button class="herramienta-btn panel-aleatorio-btn" id="btnPanelAleatorio" type="button" aria-controls="panelGrafo" aria-expanded="false">Datos y funciones ☰</button><button class="herramienta-btn" data-canvas="canvasGrafo" data-tool="weights" type="button">Mostrar todos los pesos</button></div><div class="filtro-conexiones" id="filtroConexiones" aria-label="Explorar conexiones"><span>Explorar desde</span><div id="nodosFiltro" class="nodos-filtro"></div><button type="button" id="btnMostrarTodo" class="chip-nodo activo">Todo el grafo</button></div><div class="canvas-contenedor">
+<canvas id="canvasGrafo"></canvas>
+</div><button type="button" id="btnIrCiclosRapido" class="cta-flotante">Explorar ciclos <span aria-hidden="true">→</span></button><p class="texto-ayuda">Arrastra los nodos con el mouse o el dedo para acomodarlos. Los cambios son solo visuales: ciclos, fuerza bruta y resultados conservan la distribución original y los costos originales.</p></div><aside id="panelGrafo" aria-label="Información y controles del grafo" class="grafo-sidebar"><div class="cabecera-panel"><h3 class="sidebar-title">Panel de control</h3><button type="button" id="btnCerrarPanelAleatorio" class="panel-cerrar" aria-label="Cerrar panel">✕</button></div><div id="analisisGrafo"></div><div class="leyenda">
+<div>
+<span class="punto azul"></span>
+
+                        Nodo
+
+                    </div>
+<div>
+<span class="linea-leyenda"></span>
+
+                        Arista
+
+                    </div>
+</div><div class="botones">
+<button class="secundario" id="btnVolverVerificacion">
+                        Volver
+                    </button>
+
+<button id="btnContinuarCiclos">
+                        Explorar ciclos →
+                    </button>
+</div><p class="texto-ayuda" id="coordenadas"></p></aside></div>
+
+
+
+
+
+
+</div>
+</section>
+<!-- PANTALLA 5: CICLOS HAMILTONIANOS -->
+<section class="pantalla oculta" id="pantallaCiclos">
+<div class="tarjeta"><div class="ciclos-escena">
+<div class="escena-barra"><div class="escena-titulo"><span class="mini-kicker">Explorador de rutas</span><h2>Ciclos hamiltonianos</h2></div>
+<div class="escena-acciones"><button type="button" class="herramienta-btn" id="btnInfoCiclos">¿Qué significa? <span aria-hidden="true">ⓘ</span></button></div></div>
+<div class="escena-lienzo"><canvas id="canvasCicloUnico"></canvas><aside id="teoriaCiclos" class="escena-popover" hidden><button type="button" id="btnCerrarTeoria" class="panel-cerrar">✕</button><div id="resumenCiclos"></div></aside></div>
+<div class="ciclos-footer"><button type="button" class="secundario" id="btnCicloAnterior">← Anterior</button><div class="ciclo-centro"><strong id="cicloContador">Ciclo 1</strong><span id="cicloRutaTexto"></span><span id="cicloCostoTexto"></span></div><button type="button" id="btnCicloSiguiente">Siguiente →</button></div>
+<div class="escena-fin"><button class="secundario" id="btnVolverGrafoDesdeCiclos">Volver al mapa</button><button id="btnContinuarMatriz">Ver matriz de costos →</button></div>
+</div></div></section>
+<!-- PANTALLA 6: MATRIZ -->
+<section class="pantalla oculta" id="pantallaMatriz">
+<div class="tarjeta">
+<h2>
+                    Matriz de costos
+                </h2>
+<p class="texto-ayuda">
+
+                    La matriz representa los pesos de las aristas
+                    entre cada par de nodos.
+
+                    El símbolo ∞ representa que no existe una
+                    arista entre esos nodos.
+
+                </p>
+<div id="contenedorMatriz"></div>
+<div class="botones">
+<button class="secundario" id="btnVolverCiclos">
+                        Volver
+                    </button>
+<button id="btnIniciarFuerza">
+                        Iniciar fuerza bruta
+                    </button>
+</div>
+</div>
+</section>
+<!-- PANTALLA 7: FUERZA BRUTA -->
+<section class="pantalla oculta" id="pantallaFuerza">
+<div class="tarjeta">
+<h2>
+                    Algoritmo de fuerza bruta
+                </h2>
+<div class="grafo-workbench"><div class="grafo-stage"><div class="grafo-toolbar"><div class="barra-identidad"><strong>Explora cada paso</strong><span>La ruta activa se resalta en verde agua</span></div><button type="button" class="herramienta-btn" id="btnPanelFuerza">Más opciones ···</button><button type="button" id="btnPasoRapido" class="avance-visible">Siguiente paso →</button></div><div class="canvas-contenedor">
+<canvas id="canvasRuta"></canvas>
+
+</div></div><aside id="panelFuerza" aria-label="Información y controles de la ruta" class="grafo-sidebar"><div class="cabecera-panel"><h3 class="sidebar-title">Panel de ruta</h3><button type="button" id="btnCerrarFuerza" class="panel-cerrar">✕</button></div><div class="info-ruta">
+<div class="dato">
+<span>
+                            Ruta actual
+                        </span>
+<strong id="numeroRuta">
+                            0 / 0
+                        </strong>
+</div>
+<div class="dato">
+<span>
+                            Costo actual
+                        </span>
+<strong id="costoActual">
+                            -
+                        </strong>
+</div>
+<div class="dato">
+<span>
+                            Mejor costo
+                        </span>
+<strong id="mejorCostoActual">
+                            -
+                        </strong>
+</div>
+</div><div class="ruta-texto" id="rutaActual">
+
+                    Presiona "Siguiente" para comenzar.
+
+                </div><div class="botones">
+<button class="secundario" id="btnVolverMatriz">
+                        Volver
+                    </button>
+<button class="secundario" id="btnCompletarRuta">Completar ruta</button>
+<button class="secundario" id="btnResolverTodo">Resolver todo</button>
+<button id="btnSiguienteRuta">
+                        Siguiente
+                    </button>
+</div></aside></div>
+
+
+
+
+
+
+</div>
+</section>
+<!-- PANTALLA 8: RESULTADO -->
+<section class="pantalla oculta" id="pantallaResultado">
+<div class="tarjeta">
+<h2>
+                    Resultado final
+                </h2><div class="grafo-workbench"><div class="grafo-stage"><div class="grafo-toolbar"><div class="barra-identidad"><strong>Ruta de menor costo</strong></div></div><div class="canvas-contenedor">
+<canvas id="canvasResultado"></canvas>
+
+</div></div><aside aria-label="Información y controles del grafo" class="grafo-sidebar"><h3 class="sidebar-title">Panel de control</h3><div id="resumenResultado"></div><div class="ruta-optima" id="rutaOptima"></div><div class="optimos-navegador" id="optimosNavegador" hidden><button class="secundario" type="button" id="btnOptimoAnterior">← Anterior óptimo</button><span id="optimoIndicador"></span><button class="secundario" type="button" id="btnOptimoSiguiente">Siguiente óptimo →</button></div><div class="botones"><button class="secundario" id="btnGuardar">Guardar grafo (.json)</button><button class="secundario" id="btnExportarPng">Exportar imagen</button><button class="secundario" id="btnExportarPdf">Exportar PDF</button></div></aside></div>
+
+<h3>
+                    Todos los ciclos hamiltonianos
+                </h3>
+<details class="mas"><summary>Grado interno y externo del ciclo</summary><div id="analisisCiclo"></div></details>
+<section class="vecino-caja" aria-label="Comparación de algoritmos">
+  <button type="button" class="comparar-desplegar" id="btnCompararMetodos" aria-expanded="false" aria-controls="detalleComparacion"><span>Comparación de algoritmos</span><span class="comparar-hint">Ver comparación <span aria-hidden="true">⌄</span></span></button>
+  <div id="detalleComparacion" class="comparacion-contenido" hidden>
+    <div class="comparacion-columnas">
+      <div class="comparacion-metodo"><span class="comparacion-label">Vecino más cercano</span><strong id="comparacionCostoVecino">—</strong><small>Unidades de costo</small><span class="comparacion-chip">Ruta aproximada</span></div>
+      <div class="comparacion-metodo comparacion-ganador"><span class="comparacion-label">Fuerza bruta</span><strong id="comparacionCostoFuerza">—</strong><small>Unidades de costo</small><span class="comparacion-chip">✓ Costo mínimo garantizado</span></div>
+    </div>
+    <div id="comparacionDiferencia" class="comparacion-diferencia"></div>
+    <div class="comparacion-razon"><strong>¿Por qué ocurrió esto?</strong><p id="comparacionExplicacion"></p></div>
+    <button type="button" id="btnInfoVecino" class="herramienta-btn info-vecino" aria-controls="explicacionVecino" aria-expanded="false">¿Qué significa «vecino más cercano»? ⓘ</button>
+    <div class="vecino-explicacion" id="explicacionVecino" hidden>
+      <button type="button" class="panel-cerrar" id="btnCerrarVecino" aria-label="Cerrar explicación">✕</button>
+      <h4>Vecino más cercano</h4>
+      <p>Comienza en A y escoge la conexión de menor costo hacia un nodo que todavía no visitó. Repite hasta recorrer todos y busca regresar a A.</p>
+      <p>Como decide paso a paso, no siempre encuentra el ciclo de costo mínimo.</p>
+    </div>
+  </div>
+</section>
+
+<div id="tablaResultados"></div>
+
+
+
+<div class="botones">
+<button class="secundario" id="btnVolverFuerza">
+                        Volver
+                    </button>
+<button id="btnNuevoProblema">
+                        Nuevo problema
+                    </button>
+</div>
+</div>
+</section>
+</div>
+<dialog aria-labelledby="tituloCiclo" id="dialogoCiclo"><h3 id="tituloCiclo"></h3><p id="textoCiclo"></p>
+<div class="botones"><button class="secundario" id="btnDialogoResolver">Resolver todo</button><button id="btnDialogoContinuar">Continuar</button></div></dialog>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

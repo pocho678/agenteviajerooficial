@@ -1,0 +1,156 @@
+/* Estilos del proyecto Agente Viajero — estructura.css */
+
+/* =============================== */
+/* Diseño del mockup: neutro 60 % (#F4F8FC + blanco) / azul 30 % (#1769AA) / naranja 10 % (#B8530A y #E0731A) */
+body { background: #F4F8FC; color: #12304A; }
+.contenedor { background: transparent; box-shadow: none; padding: 0 0 24px; max-width: min(1800px, 98vw); }
+.pantalla { padding: 0 clamp(12px, 2vw, 24px); }
+
+/* Barra superior azul con progreso en segmentos */
+.contenedor > header { display: flex; justify-content: space-between; align-items: center; gap: 16px; background: #1769AA; color: #fff; text-align: left; margin: 0; padding: 18px clamp(16px, 3vw, 40px); border-radius: 16px 16px 0 0; }
+.contenedor > header h1 { color: #fff; -webkit-text-fill-color: #fff; background: none; margin: 0; text-align: left; font-size: clamp(22px, 2.4vw, 30px); }
+.contenedor > header .descripcion { color: #fff; margin: 4px 0 0; text-align: left; }
+.texto-paso { white-space: nowrap; font-size: 16px; }
+.contenedor > .progreso { display: flex; gap: 6px; background: #1769AA; margin: 0 0 24px; padding: 0 clamp(16px, 3vw, 40px) 16px; border-radius: 0 0 16px 16px; }
+.progreso .linea, .progreso .paso span { display: none; }
+.progreso .paso { flex: 1; align-items: stretch; text-align: left; background: none; }
+.progreso .paso::before { content: ""; display: block; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .4); margin-bottom: 6px; }
+.progreso .paso.activo::before { background: #fff; }
+.progreso .paso.activo:not(:has(~ .paso.activo))::before { background: #E0731A; }
+.progreso .paso p, .progreso .paso.activo p { margin: 0; color: #fff; font-size: 12px; }
+
+/* Tarjetas, títulos y botones */
+.tarjeta { background: #fff; border: 1px solid #D0E4F3; border-radius: 16px; box-shadow: none; }
+h2 { color: #0D4F82; }
+button.secundario { background: #fff; color: #0D4F82; border: 2px solid #1769AA; }
+.dato { background: #fff; border: 1px solid #D0E4F3; border-radius: 16px; padding: 14px; flex: 1; }
+.dato span { display: block; font-size: 13px; color: #3F5A73; }
+.dato strong { font-size: 24px; color: #0D4F82; }
+.nodo-ruta { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #1769AA; color: #fff; font-weight: bold; }
+.flecha-ruta { color: #B8530A; font-size: 22px; }
+.ruta-texto, .calculo-ruta { background: #fff; border: 1px solid #D0E4F3; border-radius: 16px; padding: 14px; text-align: left; }
+
+/* Pantalla de fuerza bruta: grafo a la izquierda, panel a la derecha (como el mockup) */
+@media (min-width: 1024px) {
+  #pantallaFuerza .tarjeta { display: grid; grid-template-columns: minmax(0, 1fr) 380px; column-gap: 24px; row-gap: 16px; align-items: start; }
+  #pantallaFuerza .tarjeta > h2, #pantallaFuerza .tarjeta > .texto-ayuda { grid-column: 1 / -1; margin: 0; }
+  #pantallaFuerza .tarjeta > .canvas-contenedor { grid-column: 1; grid-row: 3 / span 5; }
+  #pantallaFuerza .tarjeta > :not(h2):not(.texto-ayuda):not(.canvas-contenedor) { grid-column: 2; margin: 0; }
+  #pantallaFuerza .info-ruta { display: flex; gap: 12px; }
+  #pantallaFuerza .botones { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  #btnSiguienteRuta { grid-column: 1 / -1; order: -1; }
+  #btnVolverMatriz { grid-column: 1 / -1; }
+}
+
+/* Fuerza bruta: la pantalla no crece; solo se desplaza la caja del cálculo */
+#construccionRuta { max-height: 140px; overflow-y: auto; }
+#calculoRuta { max-height: 240px; overflow-y: auto; }
+@media (min-width: 1024px) { #pantallaFuerza .tarjeta > .canvas-contenedor { position: sticky; top: 12px; } }
+/* Ventana emergente de ciclo completado */
+dialog { border: 2px solid #D0E4F3; border-radius: 16px; padding: 24px; max-width: min(92vw, 460px); color: #12304A; text-align: left; }
+dialog::backdrop { background: rgba(18, 48, 74, .55); }
+dialog h3 { margin: 0 0 10px; color: #0D4F82; }
+dialog .botones { margin-top: 16px; }
+#btnDialogoContinuar { background: #B8530A; color: #fff; }
+#canvasConstruccion { cursor: grab; }
+
+
+/* =============================== */
+/* TSP v12 · Visualización de escritorio amplia, panel independiente y controles discretos */
+:root { --wb-blue:#1769aa; --wb-border:#d2e3f1; --wb-ink:#173852; }
+body{background:#eef5fb}
+.contenedor{width:100%;max-width:none;padding:0 0 20px}
+.contenedor > header{border-radius:0}
+.contenedor > .progreso{border-radius:0;margin-bottom:12px}
+#pantallaGrafo,#pantallaFuerza,#pantallaResultado{padding:0 clamp(10px,1.2vw,24px)}
+#pantallaGrafo > .tarjeta,#pantallaFuerza > .tarjeta,#pantallaResultado > .tarjeta{max-width:none!important;width:100%;padding:clamp(12px,1.4vw,24px);margin:0;border-radius:16px}
+#pantallaGrafo .tarjeta>h2,#pantallaFuerza .tarjeta>h2,#pantallaResultado .tarjeta>h2{text-align:left;margin:0 0 5px}
+#pantallaGrafo .tarjeta>p.texto-ayuda,#pantallaFuerza .tarjeta>p.texto-ayuda{margin:0 0 12px;text-align:left}
+.grafo-workbench{display:grid;grid-template-columns:minmax(0,1fr) minmax(295px,340px);gap:16px;align-items:stretch;margin-top:12px;text-align:left;min-width:0}
+.grafo-stage{display:flex;min-width:0;flex-direction:column;position:relative;background:#f7fbff;border:1px solid var(--wb-border);border-radius:16px;padding:10px;gap:8px}
+.grafo-stage>.canvas-contenedor{margin:0;flex:1;min-height:0;display:flex;border-radius:12px;overflow:hidden;background:#fff}
+.grafo-stage>.canvas-contenedor canvas{width:100%;height:clamp(560px,75vh,1000px);min-height:0;aspect-ratio:auto;display:block;flex:1}
+.grafo-stage>.texto-ayuda,.grafo-stage .canvas-contenedor p.texto-ayuda{font-size:12px;margin:0;padding:0 7px;text-align:left;color:#57748b}
+.grafo-toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;min-height:38px}
+.grafo-toolbar .herramienta-btn{background:#fff;color:#15588a;border:1px solid var(--wb-border);border-radius:9px;font-size:12px;font-weight:700;padding:8px 11px;min-height:36px;box-shadow:none;transform:none}
+.grafo-toolbar .herramienta-btn:hover{background:#e7f2fd;transform:none}
+.grafo-toolbar .herramienta-btn[aria-pressed=true]{background:#1769aa;color:#fff;border-color:#1769aa}
+.grafo-sidebar{min-width:0;display:flex;flex-direction:column;gap:12px;border:1px solid var(--wb-border);background:#fff;padding:16px;border-radius:16px;max-height:calc(75vh + 70px);overflow-y:auto;scrollbar-width:thin}
+.grafo-sidebar .sidebar-title{margin:0;font-size:17px;color:#0d4f82}
+.grafo-sidebar .botones{display:flex;flex-direction:column;gap:9px;margin:5px 0 0}
+.grafo-sidebar .botones button{width:100%;max-width:none;margin:0}
+.grafo-sidebar .info-ruta{display:grid;grid-template-columns:1fr;gap:8px;margin:0}
+.grafo-sidebar .dato{padding:10px 12px;min-width:0}
+.grafo-sidebar .dato strong{font-size:19px}
+.grafo-sidebar .ruta-texto,.grafo-sidebar .calculo-ruta{padding:10px;overflow-wrap:anywhere;margin:0}
+.grafo-sidebar #calculoRuta{max-height:190px;overflow-y:auto}
+.grafo-sidebar #construccionRuta{max-height:120px;overflow-y:auto}
+.grafo-sidebar #analisisGrafo{margin:0;font-size:13px}
+.grafo-sidebar .leyenda{justify-content:flex-start;margin:0}
+.grafo-sidebar #coordenadas{font-size:12px;overflow-wrap:anywhere;text-align:left;margin:0}
+.grafo-sidebar .teoria{font-size:13px;line-height:1.55}
+.grafo-sidebar table{font-size:12px}
+.grafo-sidebar #resumenResultado .resumen{display:flex;flex-direction:column;gap:8px}
+.grafo-sidebar #resumenResultado .resumen-item{padding:10px}
+.grafo-sidebar #rutaOptima{overflow-wrap:anywhere}
+/* La estructura anterior de fuerza bruta ya no administra las columnas */
+@media(min-width:1024px){
+ #pantallaFuerza .tarjeta{display:block}
+ #pantallaFuerza .tarjeta>.grafo-workbench{display:grid;grid-template-columns:minmax(0,1fr) minmax(295px,340px)}
+ #pantallaFuerza .tarjeta .grafo-stage>.canvas-contenedor{grid-column:auto;grid-row:auto;position:static}
+ #pantallaFuerza .tarjeta .grafo-sidebar>*{grid-column:auto;grid-row:auto}
+ #pantallaFuerza .tarjeta .grafo-sidebar .botones{display:flex;grid-template-columns:none}
+ #pantallaFuerza #btnSiguienteRuta,#pantallaFuerza #btnVolverMatriz{grid-column:auto;order:0}
+}
+@media(max-width:950px){
+ .grafo-workbench{grid-template-columns:1fr}
+ .grafo-sidebar{max-height:none;overflow:visible}
+ .grafo-stage>.canvas-contenedor canvas{height:clamp(400px,65vh,750px)}
+ .grafo-sidebar .info-ruta{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .grafo-sidebar .botones{flex-direction:row;flex-wrap:wrap}
+ .grafo-sidebar .botones button{width:auto;flex:1 1 180px}
+}
+@media(max-width:550px){
+ .grafo-stage>.canvas-contenedor canvas{height:55vh;min-height:340px}
+ .grafo-sidebar .info-ruta{grid-template-columns:1fr}
+ .grafo-toolbar .herramienta-btn{font-size:11px}
+}
+@media print{.grafo-toolbar{display:none}.grafo-sidebar{max-height:none;overflow:visible}.grafo-workbench{display:block}.grafo-stage>.canvas-contenedor canvas{height:550px}}
+
+
+/* v13: la generación aleatoria se visualiza como mapa como mapa amplio. La manual conserva v12. */
+.panel-aleatorio-btn,.panel-aleatorio-siguiente,.barra-identidad,.panel-cerrar { display:none; }
+#pantallaGrafo .cabecera-panel { display:flex;align-items:center;justify-content:space-between;gap:8px; }
+body.modo-aleatorio[data-vista="grafo"] { padding:0; overflow:hidden; }
+body.modo-aleatorio[data-vista="grafo"] .contenedor { height:100dvh; padding:0; }
+body.modo-aleatorio[data-vista="grafo"] .contenedor > header,
+body.modo-aleatorio[data-vista="grafo"] .contenedor > .progreso { display:none; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo { padding:0; height:100dvh; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo > .tarjeta { height:100dvh; padding:0; border:0; border-radius:0; box-shadow:none; background:#eaf3fa; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .tarjeta > h2,
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .tarjeta > p.texto-ayuda { display:none; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-workbench { display:block; position:relative; margin:0; width:100vw; height:100dvh; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-stage { width:100%;height:100%;border:0;border-radius:0;padding:10px;gap:6px;background:#f3f8fc; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar { justify-content:flex-end;min-height:52px;flex-shrink:0;padding:4px 8px; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar .barra-identidad { display:flex;flex-direction:column;margin-right:auto;text-align:left;gap:2px; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .barra-identidad strong {font-size:18px;color:#0b5182}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .barra-identidad span {font-size:12px;color:#567b94}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar .panel-aleatorio-btn,
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar .panel-aleatorio-siguiente {display:inline-flex;align-items:center;justify-content:center}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .panel-aleatorio-siguiente { background:#1769aa;color:#fff;border-color:#1769aa; }
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-stage > .canvas-contenedor {flex:1;min-height:0;overflow:hidden;border:1px solid #c1daeb;border-radius:12px}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-stage canvas {height:100%!important;min-height:0;width:100%;}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-stage > .texto-ayuda {flex-shrink:0;font-size:11px;padding:3px 7px}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo #panelGrafo {position:absolute;z-index:20;right:12px;top:70px;bottom:38px;width:min(360px,calc(100vw - 24px));max-height:none;overflow:auto;border:1px solid #bdd9ec;box-shadow:0 15px 50px rgba(10,54,88,.19);transform:translateX(calc(100% + 24px));opacity:0;visibility:hidden;pointer-events:none;transition:transform .22s ease,opacity .22s ease,visibility .22s ease;}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo #panelGrafo.panel-abierto {transform:translateX(0);opacity:1;visibility:visible;pointer-events:auto}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .panel-cerrar {display:inline-flex;align-items:center;justify-content:center;background:#edf5fb;border:1px solid #cbddeb;border-radius:7px;color:#195b8e;font-size:16px;width:32px;height:32px;padding:0}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .panel-cerrar:hover {background:#daeefa}
+@media(max-width:750px){
+ body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar {gap:5px;flex-wrap:wrap;min-height:50px}
+ body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .barra-identidad span {display:none}
+ body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .barra-identidad strong {font-size:14px}
+ body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar .herramienta-btn {font-size:10px;padding:6px;min-height:30px}
+ body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo #panelGrafo {top:95px;bottom:30px}
+}
+@media print{body.modo-aleatorio[data-vista="grafo"]{overflow:visible}body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo #panelGrafo{position:static;transform:none;visibility:visible;opacity:1}}
+

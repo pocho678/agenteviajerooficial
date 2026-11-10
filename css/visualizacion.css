@@ -1,0 +1,154 @@
+/* Estilos del proyecto Agente Viajero — visualizacion.css */
+
+/* =============================== */
+/* v14 · Explorador de grafos: espacio amplio, tipografía redondeada, sin naranja */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap');
+:root{--violeta:#7163bd;--turquesa:#109b92;--marino:#173a64;--lavanda:#f1efff;--celeste:#dceafa}
+body,button,input,select,textarea{font-family:'Nunito','Trebuchet MS',sans-serif}
+h1,h2,h3,h4,.mini-kicker,.sidebar-title,.escena-titulo,.barra-identidad strong{font-family:'Fredoka','Arial Rounded MT Bold','Trebuchet MS',sans-serif;font-weight:600}
+body{background:#eff6ff;color:var(--marino)}
+button{transition:background .15s,border-color .15s,box-shadow .15s;cursor:pointer}
+button:hover{filter:brightness(1.04)}
+button:focus-visible,.chip-nodo:focus-visible{outline:3px solid #8a78df;outline-offset:3px}
+button:not(.secundario):not(.herramienta-btn):not(.chip-nodo):not(.panel-cerrar):not(.boton-pequeno){background:var(--violeta);color:white;border-color:var(--violeta)}
+button.secundario{color:#51439e;border-color:#b1a7e3}
+#btnDialogoContinuar{background:var(--turquesa)!important;border-color:var(--turquesa)!important}
+.flecha-ruta{color:var(--turquesa)}
+.contenedor>header,.contenedor>.progreso{background:#263f78}
+.contenedor>header{padding:14px 32px}
+.contenedor>.progreso{padding:4px 28px 14px;gap:10px}
+.progreso .paso{border-radius:999px;background:rgba(255,255,255,.12);padding:6px 10px;text-align:center;align-items:center;min-width:0}
+.progreso .paso::before{display:none}
+.progreso .paso p{font-size:12px;font-weight:800;white-space:nowrap}
+.progreso .paso.activo{background:rgba(177,168,255,.42)}
+.progreso .paso.activo:not(:has(~ .paso.activo)){background:#b0a4fb}
+.progreso .paso.activo:not(:has(~ .paso.activo)) p{color:#1f2654}
+.grafo-stage{background:#eff6ff}
+.grafo-stage .grafo-toolbar,.escena-barra{gap:8px}
+.grafo-toolbar .herramienta-btn,.escena-barra .herramienta-btn{border-radius:999px;border:1px solid #c8c5ee;background:#fff;color:#433f83;font-size:13px;min-height:39px;padding:8px 14px;font-weight:900}
+.grafo-toolbar .herramienta-btn[aria-pressed=true],.escena-barra .herramienta-btn[aria-pressed=true]{background:#e6e1ff;border-color:#7268c2;color:#393679}
+#pantallaGrafo .grafo-workbench{position:relative}
+.filtro-conexiones{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:4px 5px 10px;border-bottom:1px solid #dae7f3}
+.filtro-conexiones>span{font-weight:900;color:#26476a;font-size:13px;margin-right:5px}
+.nodos-filtro{display:flex;flex-wrap:wrap;gap:6px}
+.chip-nodo{border:1px solid #c3d7ed;border-radius:12px;padding:7px 12px;background:#fff;color:#284b7a;font-weight:900;font-size:13px;min-height:33px}
+.chip-nodo.activo{background:#675cb1;color:white;border-color:#675cb1;box-shadow:0 2px 5px #675cb129}
+#btnMostrarTodo{margin-left:auto}
+/* stage with filter is now flex so controls never overlap canvas */
+#pantallaGrafo .grafo-stage>.canvas-contenedor{flex:1;min-height:0}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-stage{padding:9px 14px;background:#edf5ff}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar .barra-identidad strong{font-size:19px;color:#273d78}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-toolbar .barra-identidad span{color:#5e728e}
+body.modo-aleatorio[data-vista="grafo"] #pantallaGrafo .grafo-stage>.canvas-contenedor{border-radius:18px;border:1px solid #c5d8ee}
+/* route explorer uses a single large canvas instead of thousands of miniature cards */
+body[data-vista="ciclos"]{overflow:hidden;padding:0}
+body[data-vista="ciclos"] .contenedor{height:100dvh;padding:0}
+body[data-vista="ciclos"] .contenedor>header,body[data-vista="ciclos"] .contenedor>.progreso{display:none}
+body[data-vista="ciclos"] #pantallaCiclos{padding:0;height:100dvh}
+body[data-vista="ciclos"] #pantallaCiclos>.tarjeta{padding:0;margin:0;width:100%;max-width:none;border:0;border-radius:0;box-shadow:none;height:100dvh}
+.ciclos-escena{height:100%;width:100%;display:flex;flex-direction:column;background:#eef5ff;padding:10px 14px;gap:10px;text-align:left}
+.escena-barra{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;flex-shrink:0}
+.escena-titulo{display:flex;flex-direction:column;gap:0}
+.escena-titulo h2{font-size:clamp(20px,2.2vw,30px);margin:0;color:#263f78}
+.mini-kicker{letter-spacing:.08em;color:#7163bd;font-size:11px;text-transform:uppercase}
+.escena-acciones{display:flex;gap:8px;flex-wrap:wrap}
+.escena-lienzo{position:relative;flex:1;min-height:200px;border-radius:20px;background:white;border:1px solid #c3d9ee;overflow:hidden}
+.escena-lienzo canvas{display:block;width:100%;height:100%;touch-action:none}
+.escena-popover{position:absolute;z-index:10;right:16px;top:16px;width:min(370px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;background:#fff;border:1px solid #d6cffa;border-radius:18px;box-shadow:0 12px 50px #253c6340;padding:22px;line-height:1.6}
+.escena-popover[hidden]{display:none!important}
+.escena-popover h3{color:#51449c;margin:0 25px 10px 0}
+.escena-popover p{margin-bottom:12px}
+.escena-popover details{background:#f3f0ff;border-radius:12px;padding:12px}
+.escena-popover summary{cursor:pointer;font-weight:900}
+.escena-popover .panel-cerrar{display:flex;float:right;border:0;background:#f2f0ff;border-radius:50%;padding:6px 10px;color:#3c367e}
+.ciclos-footer{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;border-radius:18px;background:white;border:1px solid #c3d9ee;padding:12px 18px;flex-shrink:0}
+.ciclos-footer button{white-space:nowrap}
+.ciclo-centro{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0}
+.ciclo-centro strong{font-size:17px;color:#554b9c}
+.ciclo-centro span{overflow-wrap:anywhere;font-weight:800;font-size:13px}
+#cicloCostoTexto{color:#087c74;font-weight:900}
+.escena-fin{display:flex;justify-content:space-between;gap:10px;flex-shrink:0}
+.escena-fin button{min-width:145px}
+/* fuerza bruta: vista horizontal, controles flotantes a pedido */
+body[data-vista="fuerza"]{overflow:hidden;padding:0}
+body[data-vista="fuerza"] .contenedor{height:100dvh;padding:0}
+body[data-vista="fuerza"] .contenedor>header,body[data-vista="fuerza"] .contenedor>.progreso{display:none}
+body[data-vista="fuerza"] #pantallaFuerza{padding:0;height:100dvh}
+body[data-vista="fuerza"] #pantallaFuerza>.tarjeta{height:100dvh;padding:0;border:0;border-radius:0;box-shadow:none}
+body[data-vista="fuerza"] #pantallaFuerza .tarjeta>h2,body[data-vista="fuerza"] #pantallaFuerza .tarjeta>p.texto-ayuda{display:none}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-workbench{width:100vw;height:100dvh;display:block;position:relative;margin:0}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-stage{width:100%;height:100%;display:flex;flex-direction:column;border:0;border-radius:0;padding:12px;background:#eef5ff}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-stage>.canvas-contenedor{flex:1;min-height:0;border:1px solid #c3d9ee;border-radius:18px}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-stage canvas{height:100%!important;min-height:0;width:100%;}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-toolbar .barra-identidad{display:flex;flex-direction:column;margin-right:auto;gap:2px}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-toolbar .barra-identidad strong{color:#273d78;font-size:19px}
+body[data-vista="fuerza"] #pantallaFuerza .grafo-toolbar .barra-identidad span{font-size:12px;color:#587188}
+body[data-vista="fuerza"] #pantallaFuerza #panelFuerza{position:absolute;z-index:30;top:70px;right:14px;bottom:30px;width:min(385px,calc(100vw - 28px));max-height:none;overflow-y:auto;box-shadow:0 14px 50px #263d6552;opacity:0;visibility:hidden;pointer-events:none;transform:translateX(calc(100% + 25px));transition:transform .2s,opacity .2s,visibility .2s}
+body[data-vista="fuerza"] #pantallaFuerza #panelFuerza.panel-abierto{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0)}
+body[data-vista="fuerza"] #pantallaFuerza #btnPanelFuerza{display:inline-flex}
+#btnPanelFuerza{display:none}
+#panelFuerza .cabecera-panel{display:flex;justify-content:space-between;align-items:center}
+#btnCerrarFuerza{display:inline-flex;border:1px solid #c3d5e6;background:white;border-radius:50%;padding:5px 10px;color:#495194}
+#pantallaFuerza .grafo-sidebar .dato{background:#f3f0ff;border-color:#e5e0ff}
+/* no bright orange anywhere in new visual design */
+#btnSiguienteRuta,#btnContinuarMatriz,#btnCicloSiguiente{background:#665bb5!important;border-color:#665bb5!important;color:white!important}
+#btnCompletarRuta,#btnResolverTodo{border-color:#aa9bd9!important;color:#4f428d}
+.ciclo-card{border-color:#d9d5f6}
+@media(max-width:760px){.ciclos-escena{padding:7px;gap:7px}.escena-acciones .herramienta-btn{padding:5px 9px;font-size:11px}.ciclos-footer{padding:8px;gap:5px}.ciclos-footer button{padding:8px;font-size:12px}.escena-fin button{min-width:0}.filtro-conexiones{gap:4px}.chip-nodo{padding:5px 8px}#btnMostrarTodo{margin-left:0}.ciclo-centro span{font-size:11px}}
+@media print{body[data-vista="ciclos"],body[data-vista="fuerza"]{overflow:visible} .escena-lienzo{height:500px}}
+
+
+/* =============================== */
+/* v15: herramientas uniformes para los dos modos; sin elementos repetidos. */
+#pantallaGrafo .grafo-toolbar [data-tool=weights] {white-space:nowrap}
+/* El panel no repite el recorrido con una tira de nodos y operaciones largas. */
+#pantallaFuerza .ruta-texto {font-size:13px; padding:10px 12px; background:#f5f8ff; border:1px solid #e1e8f7; border-radius:12px;}
+/* Información contextual sobre el método voraz. */
+.vecino-caja {position:relative;margin:20px 0 16px;padding:16px 18px;border-radius:17px;border:1px solid #cfdbef;background:#f8faff;}
+.vecino-cabecera{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.vecino-cabecera h3{margin:0;color:#263f78;font-family:'Fredoka','Trebuchet MS',sans-serif}
+.vecino-caja .teoria{margin:10px 0 0;line-height:1.55}
+.vecino-caja .info-vecino{background:#fff;color:#51439e;border:1px solid #c4b8ef;padding:9px 13px;border-radius:30px;cursor:pointer;font-weight:800}
+.vecino-explicacion{position:absolute;right:14px;top:calc(100% - 3px);z-index:40;max-width:410px;width:min(410px,calc(100% - 28px));border-radius:16px;background:white;border:1px solid #cbc5ee;box-shadow:0 12px 35px #233f6738;padding:20px;font-size:14px;line-height:1.6}
+.vecino-explicacion[hidden]{display:none!important}
+.vecino-explicacion h4{margin:0 28px 8px 0;color:#554598;font-size:18px}
+.vecino-explicacion p{margin:8px 0}
+.vecino-explicacion .panel-cerrar{display:block;float:right;background:#f3efff;color:#463b8f;border:0;border-radius:50%;padding:6px 10px;cursor:pointer}
+@media(max-width:700px){.vecino-explicacion{position:relative;top:auto;right:auto;width:100%;max-width:none;margin-top:12px}}
+
+
+/* =============================== */
+/* v16: comparación a demanda y navegación por todos los empates óptimos. */
+#pantallaResultado .grafo-toolbar [data-tool="weights"], #pantallaFuerza .grafo-toolbar [data-tool="weights"] {display:none!important}
+.vecino-caja{padding:0;overflow:visible;background:#fff;border:1px solid #d8deee}
+.comparar-desplegar{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:16px 19px;background:#f6f7ff;border:0;border-radius:16px;color:#263f78;text-align:left;cursor:pointer;font-size:18px;font-weight:800;font-family:'Fredoka','Trebuchet MS',sans-serif}
+.comparar-hint{font-size:13px;color:#6256b2;white-space:nowrap}
+.comparar-desplegar[aria-expanded="true"] .comparar-hint span{display:inline-block;transform:rotate(180deg)}
+.comparacion-contenido{padding:19px;display:flex;flex-direction:column;gap:18px}
+.comparacion-contenido[hidden],.optimos-navegador[hidden]{display:none!important}
+.comparacion-columnas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.comparacion-metodo{display:flex;flex-direction:column;gap:7px;background:#f5f7fd;border:1px solid #e0e5f4;border-radius:14px;padding:18px;align-items:flex-start}
+.comparacion-ganador{background:#e8f7f4;border-color:#a7dfd5}
+.comparacion-label{font-size:13px;color:#526278;font-weight:700}
+.comparacion-metodo>strong{font-size:32px;line-height:1.1;color:#24385c}
+.comparacion-metodo small{font-size:13px;color:#64748b}
+.comparacion-chip{font-size:12px;background:#e6e9f2;border-radius:999px;padding:5px 9px;font-weight:700;color:#536078}
+.comparacion-ganador .comparacion-chip{background:#c8efe5;color:#16745f}
+.comparacion-diferencia{border-bottom:1px solid #e7eaf3;padding-bottom:16px}
+.comparacion-diferencia>strong,.comparacion-razon>strong{font-size:16px;color:#283954}
+.comparacion-dato{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:14px;color:#607089}
+.comparacion-dato b{color:#263f78}
+.comparacion-razon p{font-size:15px;line-height:1.65;color:#384861;margin:10px 0 0}
+.comparacion-contenido .info-vecino{align-self:flex-start}
+.optimos-navegador{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:0 0 18px}
+.optimos-navegador button{font-size:12px;padding:10px 9px;min-height:38px;flex:1 1 auto}
+.optimos-navegador button:disabled{opacity:.45;cursor:not-allowed}
+.optimos-navegador span{font-size:13px;color:#4d5484;font-weight:800}
+.ruta-optima{font-size:16px;line-height:1.5;overflow-wrap:anywhere}
+.ruta-optima-texto{font-size:17px}
+@media(max-width:540px){.comparacion-columnas{grid-template-columns:1fr}.comparar-desplegar{font-size:15px}.comparar-hint{font-size:11px}}
+
+
+/* Panel de ruta: en pantallas anchas el grafo se reduce para que el panel no lo tape */
+#pantallaFuerza .grafo-stage>.canvas-contenedor{transition:margin-right .2s}
+@media(min-width:900px){#pantallaFuerza .grafo-workbench.con-panel .grafo-stage>.canvas-contenedor{margin-right:calc(min(385px,100vw - 28px) + 14px)}}

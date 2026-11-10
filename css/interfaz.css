@@ -1,0 +1,61 @@
+/* Estilos del proyecto Agente Viajero — interfaz.css */
+
+/* =============================== */
+/* v18: modo dirigido y control de grados */
+.config-direccion{margin:15px 0;border:1px solid #c7d6f4;background:#f6f8ff;border-radius:16px;padding:15px 18px;display:flex;flex-direction:column;gap:10px}
+.config-direccion legend{font-weight:800;color:#283f76;padding:0 8px}
+.config-direccion>label{display:flex;align-items:center;gap:10px;cursor:pointer}
+.config-direccion input[type=radio]{accent-color:#685bc0;width:17px;height:17px}
+.config-direccion .form-arista{margin:8px 0;display:flex;gap:16px;flex-wrap:wrap}
+.config-direccion .form-arista>div{min-width:180px;display:flex;flex-direction:column;gap:6px}
+.config-direccion select{padding:9px 12px;border-radius:10px;border:1px solid #9daee2;background:#fff}
+.config-direccion [hidden], #opcionCompleto[hidden]{display:none!important}
+
+
+/* =============================== */
+
+#pantallaInicio:not(.oculta){display:flex;justify-content:center;align-items:flex-start}
+#pantallaInicio.oculta{display:none!important}
+#pantallaInicio .tarjeta{width:min(690px,100%);margin-left:auto;margin-right:auto}
+/* v22 — acciones reconocibles, sin instrucciones extra */
+:root{--ui-dark:#233c76;--ui-violet:#6757b5;--ui-green:#138e87}
+#pantallaInicio .tarjeta{max-width:690px!important;padding:clamp(24px,4vw,46px)!important;text-align:center;border-radius:28px;box-shadow:0 22px 65px #283c7218}
+#pantallaInicio h2{font-size:clamp(26px,3vw,38px);margin-bottom:20px}
+#pantallaInicio label[for=cantidadNodos]{font-size:14px;font-weight:900;color:#607398;text-transform:uppercase;letter-spacing:.06em}
+.contador-nodos{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px auto 25px}
+.contador-nodos input{width:105px!important;height:68px!important;border:2px solid #cbd6f5;border-radius:18px;font-family:Fredoka,sans-serif!important;font-size:34px!important;text-align:center;color:#263f78;background:#f8faff;appearance:textfield;-moz-appearance:textfield}
+.contador-nodos input::-webkit-outer-spin-button,.contador-nodos input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.contador-nodos button{width:54px;height:54px;border-radius:16px!important;background:#e9e6fb!important;color:#4941a0!important;border:1px solid #cbc6ef!important;font-size:30px!important;font-weight:800}
+#pantallaInicio .botones{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:27px}
+#pantallaInicio .botones .eleccion-modo{min-height:142px;display:flex!important;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;padding:22px!important;border:2px solid #cfcafa!important;border-radius:22px!important;background:#f4f1ff!important;color:#44388d!important;box-shadow:0 7px 0 #d8d2f2!important;text-align:left;font-family:Fredoka,sans-serif;font-size:21px!important;position:relative}
+#pantallaInicio .botones .eleccion-modo:nth-child(2){background:#e9f7f6!important;color:#087973!important;border-color:#8fd7cf!important;box-shadow:0 7px 0 #b9e6e1!important}
+#pantallaInicio .eleccion-modo:hover{transform:translateY(-3px);box-shadow:0 10px 16px #36377a22!important}
+#pantallaInicio .eleccion-icono{font-size:31px;font-family:Nunito,sans-serif;line-height:1}
+#pantallaInicio .eleccion-flecha{position:absolute;right:19px;bottom:17px;font-size:28px}
+#pantallaInicio .form-ejemplo{margin:9px auto;text-align:center}
+#pantallaInicio #opcionCompleto{padding:9px 14px;background:#f0f6ff;border-radius:12px;display:inline-flex;align-items:center}
+#pantallaInicio #opcionCompleto label{font-size:14px}
+#pantallaInicio #btnCargarArchivo,#pantallaInicio #btnEjemplo{font-size:13px;padding:9px 13px}
+/* Clear current step, progressively marked */
+.contenedor>.progreso{border-radius:0 0 18px 18px!important;padding-bottom:16px!important}
+.progreso .paso{opacity:.6;transition:opacity .2s,background .2s}
+.progreso .paso.activo{opacity:1}
+.progreso .paso.activo:last-of-type{opacity:1}
+.progreso .paso span{display:none}
+.progreso .paso p{font-size:12px!important;letter-spacing:.01em}
+/* One primary action always visible on the map */
+#pantallaGrafo .grafo-stage{position:relative}
+.cta-flotante{position:absolute;right:24px;bottom:57px;z-index:4;display:flex;gap:14px;align-items:center;background:#6757b5!important;border:2px solid #fff!important;border-radius:16px!important;color:white!important;padding:14px 22px!important;box-shadow:0 12px 24px #22326345;font-weight:900;font-size:16px}
+.cta-flotante:hover{transform:translateY(-2px)}
+#pantallaGrafo .grafo-sidebar #btnContinuarCiclos{display:none}
+#pantallaGrafo .grafo-toolbar .barra-identidad span{display:none}
+/* Force brute: next is visible, other controls are secondary */
+#btnPasoRapido{display:inline-flex;align-items:center;justify-content:center;background:#6757b5!important;color:white!important;border:1px solid #6757b5!important;border-radius:14px;padding:10px 22px;font-weight:900;box-shadow:0 5px 15px #4d448c24;white-space:nowrap}
+#pantallaFuerza #panelFuerza #btnSiguienteRuta{display:none}
+#pantallaFuerza .grafo-toolbar .barra-identidad span{display:none}
+/* clearer visuals for existing controls */
+#pantallaConstruccion #btnVerificar,#pantallaVerificacion #btnContinuarGrafo,#pantallaMatriz #btnIniciarFuerza,#pantallaResultado #btnNuevoProblema{border-radius:14px;padding:14px 26px!important;box-shadow:0 5px 15px #4d448c1b}
+#pantallaCiclos .escena-fin #btnContinuarMatriz,#pantallaCiclos #btnCicloSiguiente{box-shadow:0 5px 14px #4d448c22}
+#pantallaResultado .ruta-optima{border-radius:18px}
+@media(max-width:700px){#pantallaInicio .botones{grid-template-columns:1fr}#pantallaInicio .botones .eleccion-modo{min-height:100px}#pantallaInicio .tarjeta{padding:18px!important}.cta-flotante{right:10px;bottom:40px;padding:10px 15px!important;font-size:13px}#btnPasoRapido{padding:9px 11px;font-size:12px}}
+

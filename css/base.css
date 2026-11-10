@@ -1,0 +1,1166 @@
+/* Estilos del proyecto Agente Viajero — base.css */
+
+/* =============================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+
+    font-family:
+        "Trebuchet MS",
+        "Arial Rounded MT Bold",
+        sans-serif;
+
+    background-color: #eaf4ff;
+
+    color: #12304a;
+
+    min-height: 100vh;
+
+    padding: 30px 15px;
+}
+
+
+.contenedor {
+
+    width: 95%;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    text-align: center;
+}
+
+
+/* ENCABEZADO */
+
+header {
+
+    margin-bottom: 30px;
+
+}
+
+
+h1 {
+
+    font-size: 48px;
+
+    font-weight: 900;
+
+    color: #1769aa;
+
+    margin-bottom: 10px;
+
+}
+
+
+.descripcion {
+
+    font-size: 18px;
+
+    color: #52708a;
+
+}
+
+
+/* PROGRESO */
+
+.progreso {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 30px;
+
+    overflow-x: auto;
+
+    padding: 5px;
+
+}
+
+
+.paso {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    min-width: 75px;
+
+    color: #8aa6bb;
+
+}
+
+
+.paso span {
+
+    width: 35px;
+
+    height: 35px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background-color: #c8ddeb;
+
+    color: #52708a;
+
+    font-weight: bold;
+
+    margin-bottom: 5px;
+
+}
+
+
+.paso p {
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+}
+
+
+.paso.activo span {
+
+    background-color: #1769aa;
+
+    color: white;
+
+}
+
+
+.paso.activo p {
+
+    color: #1769aa;
+
+}
+
+
+.paso.completado span {
+
+    background-color: #3b8fc4;
+
+    color: white;
+
+}
+
+
+.paso.completado p {
+
+    color: #3b8fc4;
+
+}
+
+
+.linea {
+
+    width: 25px;
+
+    height: 3px;
+
+    background-color: #c8ddeb;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* PANTALLAS */
+
+.pantalla {
+
+    display: block;
+
+}
+
+
+.oculta {
+
+    display: none;
+
+}
+
+
+/* TARJETAS */
+
+.tarjeta {
+
+    background-color: white;
+
+    padding: 35px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 70, 130, 0.15);
+
+    margin-bottom: 30px;
+
+}
+
+
+h2 {
+
+    color: #1769aa;
+
+    margin-bottom: 20px;
+
+    font-size: 30px;
+
+}
+
+
+h3 {
+
+    color: #1769aa;
+
+    margin-top: 30px;
+
+    margin-bottom: 15px;
+
+    font-size: 22px;
+
+}
+
+
+.texto-ayuda {
+
+    color: #52708a;
+
+    margin-bottom: 25px;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+}
+
+
+/* INPUTS */
+
+label {
+
+    display: block;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+
+input,
+select {
+
+    padding: 13px;
+
+    border: 2px solid #9bc9ed;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-family: inherit;
+
+    outline: none;
+
+    background-color: white;
+
+}
+
+
+input:focus,
+select:focus {
+
+    border-color: #1769aa;
+
+}
+
+
+#cantidadNodos {
+
+    width: 220px;
+
+    text-align: center;
+
+}
+
+
+#pesoArista {
+
+    width: 150px;
+
+}
+
+
+/* BOTONES */
+
+.botones {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 30px;
+
+    flex-wrap: wrap;
+
+}
+
+
+button {
+
+    background-color: #1769aa;
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 22px;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    font-family: inherit;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+
+button:hover {
+
+    background-color: #0d4f82;
+
+    transform: translateY(-2px);
+
+}
+
+
+button:active {
+
+    transform: scale(0.97);
+
+}
+
+
+button.secundario {
+
+    background-color: #8aa6bb;
+
+}
+
+
+button.secundario:hover {
+
+    background-color: #637f94;
+
+}
+
+
+.boton-pequeno {
+
+    padding: 8px 12px;
+
+    font-size: 13px;
+
+}
+
+
+.boton-eliminar {
+
+    background-color: #d9534f;
+
+}
+
+
+.boton-eliminar:hover {
+
+    background-color: #a9322e;
+
+}
+
+
+.boton-editar {
+
+    background-color: #e0a21a;
+
+}
+
+
+.boton-editar:hover {
+
+    background-color: #b17e0c;
+
+}
+
+
+/* MENSAJES */
+
+#mensaje,
+#mensajeArista {
+
+    min-height: 25px;
+
+    margin-top: 10px;
+
+    margin-bottom: 10px;
+
+    font-weight: bold;
+
+}
+
+
+.error {
+
+    background-color: #ffe4e4;
+
+    border: 2px solid #e18b8b;
+
+    color: #a32222;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin-top: 15px;
+
+    line-height: 1.5;
+
+}
+
+
+.exito {
+
+    background-color: #e4f8ea;
+
+    border: 2px solid #8bc99a;
+
+    color: #216b31;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin-top: 15px;
+
+    line-height: 1.5;
+
+}
+
+
+.advertencia {
+
+    background-color: #fff5d9;
+
+    border: 2px solid #e5c36d;
+
+    color: #765c12;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin-top: 15px;
+
+    line-height: 1.5;
+
+}
+
+
+/* FORMULARIO DE ARISTAS */
+
+.form-arista {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: end;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 15px;
+
+}
+
+
+.form-arista > div {
+
+    text-align: left;
+
+}
+
+
+/* TABLAS */
+
+.tabla-scroll {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 10px;
+
+    background-color: white;
+
+}
+
+
+th {
+
+    background-color: #1769aa;
+
+    color: white;
+
+    padding: 12px;
+
+    font-weight: bold;
+
+}
+
+
+td {
+
+    padding: 11px;
+
+    border: 1px solid #c8ddeb;
+
+    text-align: center;
+
+}
+
+
+tr:nth-child(even) {
+
+    background-color: #f2f8fd;
+
+}
+
+
+/* CANVAS */
+
+.canvas-contenedor {
+
+    width: 100%;
+
+    overflow: hidden;
+
+    border: 2px solid #c5def0;
+
+    border-radius: 15px;
+
+    background-color: #fafdff;
+
+    margin-top: 20px;
+
+}
+
+
+canvas {
+
+    display: block;
+
+    width: 100%;
+
+    height: 500px;
+
+}
+
+
+/* LEYENDA */
+
+.leyenda {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 30px;
+
+    margin-top: 15px;
+
+    color: #52708a;
+
+    font-size: 14px;
+
+}
+
+
+.leyenda div {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.punto {
+
+    width: 15px;
+
+    height: 15px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+}
+
+
+.punto.azul {
+
+    background-color: #1769aa;
+
+}
+
+
+.linea-leyenda {
+
+    width: 25px;
+
+    height: 3px;
+
+    background-color: #8bb9d8;
+
+    display: inline-block;
+
+}
+
+
+/* MATRIZ */
+
+.matriz {
+
+    width: auto;
+
+    margin: 20px auto;
+
+}
+
+
+.matriz th {
+
+    min-width: 65px;
+
+}
+
+
+.matriz td {
+
+    min-width: 65px;
+
+    font-weight: bold;
+
+}
+
+
+/* INFORMACIÓN DE RUTA */
+
+.info-ruta {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    margin: 25px 0;
+
+}
+
+
+.dato {
+
+    background-color: #eaf4ff;
+
+    border: 2px solid #b7d6ec;
+
+    border-radius: 15px;
+
+    padding: 15px 25px;
+
+    min-width: 150px;
+
+}
+
+
+.dato span {
+
+    display: block;
+
+    font-size: 13px;
+
+    color: #52708a;
+
+    margin-bottom: 7px;
+
+}
+
+
+.dato strong {
+
+    color: #1769aa;
+
+    font-size: 20px;
+
+}
+
+
+.ruta-texto {
+
+    background-color: #f0f8ff;
+
+    border: 2px solid #b7d6ec;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: #12304a;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* CONSTRUCCIÓN DE RUTA */
+
+.construccion-ruta {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin: 20px 0;
+
+    min-height: 50px;
+
+}
+
+
+.nodo-ruta {
+
+    background-color: #1769aa;
+
+    color: white;
+
+    border-radius: 10px;
+
+    padding: 10px 15px;
+
+    font-weight: bold;
+
+}
+
+
+.flecha-ruta {
+
+    color: #1769aa;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+
+/* CÁLCULO DE RUTA */
+
+.calculo-ruta {
+
+    background-color: #f7fbff;
+
+    border: 2px solid #d0e4f3;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    margin-bottom: 20px;
+
+    text-align: left;
+
+}
+
+
+.calculo-ruta .operacion {
+
+    padding: 8px;
+
+    border-bottom: 1px solid #dcebf5;
+
+}
+
+
+.calculo-ruta .total {
+
+    margin-top: 10px;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    color: #1769aa;
+
+}
+
+
+/* CICLOS */
+
+.resumen-simple {
+
+    background-color: #eaf4ff;
+
+    border: 2px solid #b7d6ec;
+
+    border-radius: 15px;
+
+    padding: 18px;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    color: #1769aa;
+
+    margin-bottom: 20px;
+
+}
+
+
+.ciclo-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    background-color: #f7fbff;
+
+    border: 2px solid #d0e4f3;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    margin-bottom: 10px;
+
+    text-align: left;
+
+}
+
+
+.ciclo-numero {
+
+    background-color: #1769aa;
+
+    color: white;
+
+    width: 35px;
+
+    height: 35px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-weight: bold;
+
+}
+
+
+.ciclo-ruta {
+
+    font-weight: bold;
+
+    color: #12304a;
+
+}
+
+
+/* ========================================= */
+/* RESULTADO */
+/* ========================================= */
+
+.resumen {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin: 20px 0;
+
+}
+
+
+.resumen-item {
+
+    background-color: #eaf4ff;
+
+    border: 2px solid #b7d6ec;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+}
+
+
+.resumen-item span {
+
+    display: block;
+
+    font-size: 14px;
+
+    color: #52708a;
+
+    margin-bottom: 8px;
+
+}
+
+
+.resumen-item strong {
+
+    color: #1769aa;
+
+    font-size: 22px;
+
+}
+
+
+.ruta-optima {
+
+    background-color: #e4f8ea;
+
+    border: 3px solid #75bb86;
+
+    color: #216b31;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    font-size: 21px;
+
+    font-weight: bold;
+
+    margin: 20px 0;
+
+}
+
+
+/* ========================================= */
+/* RESPONSIVE */
+/* ========================================= */
+
+@media (max-width: 800px) {
+
+    h1 {
+
+        font-size: 38px;
+
+    }
+
+
+    .tarjeta {
+
+        padding: 22px;
+
+    }
+
+
+    .progreso {
+
+        justify-content: flex-start;
+
+    }
+
+
+    .linea {
+
+        width: 15px;
+
+    }
+
+
+    .resumen {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    canvas {
+
+        height: 400px;
+
+    }
+
+}
+
+
+@media (max-width: 550px) {
+
+    body {
+
+        padding: 15px 8px;
+
+    }
+
+
+    h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .descripcion {
+
+        font-size: 15px;
+
+    }
+
+
+    .tarjeta {
+
+        padding: 18px;
+
+    }
+
+
+    button {
+
+        width: 100%;
+
+    }
+
+
+    .botones {
+
+        flex-direction: column;
+
+    }
+
+
+    canvas {
+
+        height: 330px;
+
+    }
+
+}
+
+/* =============================== */
+/* Responsivo: móvil, tablet, laptop y TV. Se carga después de style.css. */
+canvas { height: auto; aspect-ratio: 16 / 10; }
+.contenedor { max-width: min(1800px, 98vw); width: 98%; }
+.tarjeta { padding: clamp(12px, 2vw, 30px); }
+.canvas-contenedor canvas { height: clamp(380px, 78vh, 1100px); aspect-ratio: auto; }
+button { min-height: 44px; }
+button:disabled { opacity: .5; cursor: default; transform: none; }
+.lista-faltantes { text-align: left; margin: 10px 0 10px 25px; }
+.optimo { font-weight: bold; background-color: #e4f8ea !important; }
+.paginador { margin-top: 15px; gap: 12px; }
+.pagina { color: #52708a; font-weight: bold; }
+
+.rejilla-ciclos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; text-align: left; }
+.ciclo-card { background: #f7fbff; border: 2px solid #d0e4f3; border-radius: 14px; padding: 12px; }
+.ciclo-card h4 { color: #1769aa; margin-bottom: 4px; }
+.ciclo-card p { font-weight: bold; font-size: 14px; margin-bottom: 8px; overflow-wrap: anywhere; }
+.ciclo-card canvas { aspect-ratio: 4 / 3; height: auto; background: #fff; border-radius: 10px; }
+
+@media (max-width: 768px) {                 /* tablet */
+  .contenedor { width: 100%; }
+  canvas { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 480px) {                 /* móvil */
+  canvas { aspect-ratio: 1 / 1.1; }
+  .paso { min-width: 40px; }
+  .paso:not(.activo) p { display: none; }
+  .info-ruta .dato { min-width: 100%; }
+  .form-arista > div, .form-arista select, .form-arista input, #cantidadNodos { width: 100%; }
+}
+@media (min-width: 2400px) { body { zoom: 1.8; } }    /* 4K */
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* Paleta 60-30-10: neutro claro / azul / naranja de acento */
+body { background: #F4F8FC; color: #12304A; }
+#btnSiguienteRuta { background: #B8530A; color: #fff; }
+.teoria { background: #F4F8FC; border-left: 5px solid #1769AA; border-radius: 8px; padding: 10px 14px; margin-top: 12px; text-align: left; }
+.form-ejemplo { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin: 14px 0; }
+.form-ejemplo select { min-height: 44px; max-width: 100%; }
+@media print { .botones, .paginador, .paso, #btnNuevoProblema { display: none !important; } body { zoom: 1; background: #fff; } }
+
+/* Usabilidad: botón principal consistente, avisos, ayuda */
+[hidden] { display: none !important; }
+#btnIniciarFuerza, #btnContinuarGrafo, #btnContinuarCiclos, #btnContinuarMatriz { background: #B8530A; color: #fff; }
+.aviso-error:not(:empty)::before { content: "!"; display: inline-block; width: 1.4em; height: 1.4em; line-height: 1.4em; margin-right: 8px; border-radius: 50%; background: #B3261E; color: #fff; font-weight: bold; text-align: center; }
+.aviso-error { font-weight: bold; margin-top: 12px; }
+.ayuda, .mas { text-align: left; background: #fff; border: 1px solid #D0E4F3; border-radius: 12px; padding: 10px 16px; margin: 12px 0; }
+.ayuda summary, .mas summary { cursor: pointer; font-weight: bold; color: #0D4F82; min-height: 32px; }
+.ayuda ol { margin: 6px 0 4px 22px; }
+
