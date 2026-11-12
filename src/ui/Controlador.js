@@ -6,9 +6,10 @@ import { EJEMPLOS } from "../domain/Ejemplos.js";
 import { serializar, deserializar } from "../domain/Persistencia.js";
 import { Sesion } from "../application/Sesion.js";
 import { Navegador } from "./Navegador.js";
-import { LienzoGrafo } from "./RenderizadorGrafo.js";
+import { LienzoGrafo, colorDeCiclo } from "./RenderizadorGrafo.js";
 import { paginar } from "./Paginador.js";
 
+const puntoCiclo = (color) => (color ? `<span class="punto-ciclo" style="background:${color}"></span>` : "");
 const $ = (id) => document.getElementById(id);
 const on = (id, fn) => $(id).addEventListener("click", fn);
 const aviso = (el, texto, color) => { el.setAttribute("aria-live", "polite"); el.textContent = (color === "red" ? "Error: " : "") + texto; el.style.color = color; };
@@ -202,13 +203,13 @@ export class Controlador {
     const ciclos = this.sesion.ciclos;
     this.cicloActual = Math.max(0, Math.min(this.cicloActual, ciclos.length - 1));
     const c = ciclos[this.cicloActual];
-    $("cicloContador").textContent = `Ciclo ${formatoNumero(this.cicloActual + 1)} de ${formatoNumero(ciclos.length)}`;
+    const color = colorDeCiclo(this.cicloActual, ciclos.length);
+    $("cicloContador").innerHTML = `${puntoCiclo(color)}Ciclo ${formatoNumero(this.cicloActual + 1)} de ${formatoNumero(ciclos.length)}`;
     $("cicloRutaTexto").textContent = c.texto();
     $("cicloCostoTexto").textContent = `Costo total: ${c.costo(this.grafo)}`;
     $("btnCicloAnterior").disabled = this.cicloActual === 0;
     $("btnCicloSiguiente").disabled = this.cicloActual === ciclos.length - 1;
-    this.lienzo.ciclos.soloRuta = true;
-    this.lienzo.ciclos.mostrar(this.grafo, { ciclo: c, posiciones: this.#posicionesOriginales() });
+    this.lienzo.ciclos.mostrar(this.grafo, { ciclo: c, color, posiciones: this.#posicionesOriginales() });
   }
   #verGrafo() {
     if (this.sesion.ciclos.length === 0) return aviso($("avisoVerificacion"), "Primero completa el grafo: debe existir al menos un ciclo hamiltoniano.", "red");
@@ -255,16 +256,15 @@ export class Controlador {
     this.#pintarFuerza();
   }
   #pintarFuerza() {
-    const f = this.fb, g = this.grafo, c = f.ciclo, k = f.k;
+    const f = this.fb, g = this.grafo, c = f.ciclo, k = f.k, color = colorDeCiclo(f.i, f.ciclos.length);
     $("numeroRuta").textContent = `${f.i + 1} / ${f.ciclos.length}`;
     $("costoActual").textContent = c.costo(g, k);
     $("mejorCostoActual").textContent = f.mejor ? f.mejorCosto : "-";
-    $("rutaActual").innerHTML = `<strong>Ruta en construcción:</strong> ${c.texto(k)}` + (f.rutaCompleta ? `<br><br><strong>Costo total de la ruta:</strong> ${c.costo(g)}` : "");
+    $("rutaActual").innerHTML = `<strong>${puntoCiclo(color)}Ruta en construcción:</strong> ${c.texto(k)}` + (f.rutaCompleta ? `<br><br><strong>Costo total de la ruta:</strong> ${c.costo(g)}` : "");
     $("btnSiguienteRuta").textContent = f.finalizado ? "Ver resultado final" : f.rutaCompleta ? "Ir al siguiente ciclo" : "Siguiente paso";
     $("btnPasoRapido").textContent = $("btnSiguienteRuta").textContent + " →";
     $("btnCompletarRuta").disabled = f.rutaCompleta;
-    this.lienzo.ruta.soloRuta = true;
-    this.lienzo.ruta.mostrar(g, { ciclo: c, k, posiciones: this.#posicionesOriginales() });
+    this.lienzo.ruta.mostrar(g, { ciclo: c, k, color, posiciones: this.#posicionesOriginales() });
   }
   #siguiente() {
     const f = this.fb;
@@ -299,7 +299,7 @@ export class Controlador {
       const filas = [];
       for (let i = desde; i < hasta; i++) {
         const costo = f.ciclos[i].costo(g);
-        filas.push(`<tr${costo === f.mejorCosto ? ' class="optimo"' : ""}><td>${i + 1}</td><td>${f.ciclos[i].texto()}</td><td>${costo}</td></tr>`);
+        filas.push(`<tr${costo === f.mejorCosto ? ' class="optimo"' : ""}><td>${puntoCiclo(colorDeCiclo(i, f.ciclos.length))}${i + 1}</td><td>${f.ciclos[i].texto()}</td><td>${costo}</td></tr>`);
       }
       cuerpo.innerHTML = tabla(["Nº", "Ciclo Hamiltoniano", "Costo total"], filas);
     });
@@ -308,7 +308,6 @@ export class Controlador {
       tabla(["Nodo", "Entra", "Sale", "Grado interno", "Grado externo"], r.slice(0, -1).map((v, i) =>
         `<tr><td>${nombreNodo(v)}</td><td>${nombreNodo(r[(i + total - 1) % total])} → ${nombreNodo(v)}</td><td>${nombreNodo(v)} → ${nombreNodo(r[i + 1])}</td><td>1</td><td>1</td></tr>`));
     this.nav.ir("Resultado", 7);
-    this.lienzo.resultado.soloRuta = true;
     this.#mostrarOptimo();
     const v = vecinoMasCercano(g);
     const extra = v ? v.costo - f.mejorCosto : null;
@@ -332,15 +331,14 @@ export class Controlador {
 
   #mostrarOptimo() {
     if (!this.optimos?.length || !this.grafo) return;
-    const c = this.optimos[this.optimoActual];
+    const c = this.optimos[this.optimoActual], color = colorDeCiclo(this.fb.ciclos.indexOf(c), this.fb.ciclos.length);
     const cantidad = this.optimos.length;
-    $("rutaOptima").innerHTML = `<strong>${cantidad === 1 ? "Ciclo óptimo" : "Ciclos óptimos"} (${cantidad})</strong><br><br><span class="ruta-optima-texto">${c.texto()}</span><br><br>Costo total mínimo: ${this.fb.mejorCosto}`;
+    $("rutaOptima").innerHTML = `<strong>${cantidad === 1 ? "Ciclo óptimo" : "Ciclos óptimos"} (${cantidad})</strong><br><br><span class="ruta-optima-texto">${puntoCiclo(color)}${c.texto()}</span><br><br>Costo total mínimo: ${this.fb.mejorCosto}`;
     $("optimosNavegador").hidden = cantidad < 2;
     $("optimoIndicador").textContent = `${this.optimoActual + 1} de ${cantidad}`;
     $("btnOptimoAnterior").disabled = this.optimoActual === 0;
     $("btnOptimoSiguiente").disabled = this.optimoActual === cantidad - 1;
-    this.lienzo.resultado.soloRuta = true;
-    this.lienzo.resultado.mostrar(this.grafo, { ciclo: c, posiciones: this.#posicionesOriginales() });
+    this.lienzo.resultado.mostrar(this.grafo, { ciclo: c, color, posiciones: this.#posicionesOriginales() });
   }
 
   #enlazar() {

@@ -152,3 +152,6 @@ body[data-vista="fuerza"] #pantallaFuerza #btnPanelFuerza{display:inline-flex}
 /* Panel de ruta: en pantallas anchas el grafo se reduce para que el panel no lo tape */
 #pantallaFuerza .grafo-stage>.canvas-contenedor{transition:margin-right .2s}
 @media(min-width:900px){#pantallaFuerza .grafo-workbench.con-panel .grafo-stage>.canvas-contenedor{margin-right:calc(min(385px,100vw - 28px) + 14px)}}
+
+/* Punto de color que identifica cada ciclo (más de 1 ciclo) */
+.punto-ciclo{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.45em;vertical-align:baseline}

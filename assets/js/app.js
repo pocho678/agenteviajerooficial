@@ -390,6 +390,11 @@ function paginar(contenedor, total, porPagina, pintar, claseCuerpo = "") {
 }
 
 // ===== ui/RenderizadorGrafo =====
+const COLORES_CICLO = ["#129b91", "#e0731a", "#d32f2f", "#7e57c2", "#f9a825", "#1e88e5", "#43a047", "#ec407a", "#6d4c41", "#00acc1"];
+const MIN_CICLOS_COLORES = 2;
+/** Si hay más de 1 ciclo, cada uno tiene su propio color, el mismo en todas las pantallas. */
+const colorDeCiclo = (indice, total) => (total >= MIN_CICLOS_COLORES ? COLORES_CICLO[indice % COLORES_CICLO.length] : null);
+const oscurecer = (hex, f = 0.35) => "#" + [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * (1 - f)).toString(16).padStart(2, "0")).join("");
 const COLORES_NODO = ["#1769AA", "#2E7D32", "#7B1FA2", "#00838F", "#AD1457", "#5D4037", "#283593", "#558B2F", "#37474F", "#9E6B00"];
 const TENUE = "#b7ccdf", RUTA = "#129b91", RUTA_OSC = "#08736e", TEXTO = "#12304A";
 
@@ -415,12 +420,12 @@ function etiquetaPeso(ctx, a, b, peso, mini, color, k) {
 class LienzoGrafo {
   /** mapa: {x0, y0, ancho, alto} fija el plano para que nada se reacomode al arrastrar nodos. */
   constructor(canvas, { mini = false, mapa = null } = {}) {
-    this.canvas = canvas; this.mini = mini; this.mapa = mapa; this.args = null; this.mostrarTodosPesos = false; this.ocultarPesos = false; this.nodoFoco = -1; this.nodoFiltro = -1; this.soloRuta = false;
+    this.canvas = canvas; this.mini = mini; this.mapa = mapa; this.args = null; this.mostrarTodosPesos = false; this.ocultarPesos = false; this.nodoFoco = -1; this.nodoFiltro = -1;
     new ResizeObserver(() => this.pintar()).observe(canvas);
   }
   /** ciclo: Ciclo a resaltar con flechas; k: cuántos nodos del ciclo mostrar. */
-  mostrar(grafo, { ciclo = null, k = ciclo ? ciclo.nodos.length : 0, posiciones = null } = {}) {
-    this.args = { grafo, ciclo, k, posiciones };
+  mostrar(grafo, { ciclo = null, k = ciclo ? ciclo.nodos.length : 0, posiciones = null, color = null } = {}) {
+    this.args = { grafo, ciclo, k, posiciones, color };
     this.canvas.setAttribute("role", "img");
     this.canvas.setAttribute("aria-label", `Grafo de ${grafo.n} nodos` + (ciclo ? `. Ruta: ${ciclo.texto(k)}` : ""));
     this.pintar();
@@ -481,7 +486,7 @@ class LienzoGrafo {
   pintar() {
     const { canvas, mini, args, mapa } = this, w = canvas.clientWidth, h = canvas.clientHeight;
     if (!args || !w || !h) return;
-    const { grafo, ciclo, k: pasos } = args, posiciones = args.posiciones || grafo.posiciones, dpr = window.devicePixelRatio || 1;
+    const { grafo, ciclo, k: pasos, color } = args, posiciones = args.posiciones || grafo.posiciones, dpr = window.devicePixelRatio || 1;
     canvas.width = w * dpr; canvas.height = h * dpr;
     const ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
@@ -497,21 +502,20 @@ class LienzoGrafo {
     const tramos = ciclo ? ciclo.nodos.slice(0, pasos).slice(1).map((b, i) => [ciclo.nodos[i], b]) : [];
     const enCiclo = (a, b) => tramos.some(([u, v]) => u === a && v === b || (!grafo.dirigido && u === b && v === a));
     for (const { a, b } of grafo.aristas()) {
-      if (this.soloRuta && ciclo) continue;
       if (this.nodoFiltro >= 0 && a !== this.nodoFiltro && b !== this.nodoFiltro) continue;
       ctx.strokeStyle = TENUE; ctx.lineWidth = (mini ? 1.5 : 2) * k; ctx.beginPath();
       if (grafo.dirigido) flecha(ctx, pos[a], pos[b], radio, TENUE, (mini ? 1.5 : 2) * k, mini ? 6 : 10 * k);
       else { ctx.moveTo(pos[a].x, pos[a].y); ctx.lineTo(pos[b].x, pos[b].y); ctx.stroke(); }
     }
-    for (const [a, b] of tramos) flecha(ctx, pos[a], pos[b], radio, RUTA, mini ? 3 : 5 * k, mini ? 9 : 15 * k);
+    for (const [a, b] of tramos) flecha(ctx, pos[a], pos[b], radio, color || RUTA, mini ? 3 : 5 * k, mini ? 9 : 15 * k);
     // En grafos densos, evitar mostrar 30–45 etiquetas superpuestas.
     // Pasando el cursor por un nodo se revelan los pesos de sus conexiones.
     const denso = grafo.aristas().length > 18;
     for (const { a, b, peso } of grafo.aristas()) {
       const visible = !this.ocultarPesos && (this.nodoFiltro < 0 || a === this.nodoFiltro || b === this.nodoFiltro) &&
-        (this.soloRuta && ciclo ? enCiclo(a, b) : (mini ? enCiclo(a, b) :
-        this.mostrarTodosPesos || !denso || enCiclo(a, b) || a === this.nodoFoco || b === this.nodoFoco));
-      if (visible) etiquetaPeso(ctx, pos[a], pos[b], peso, mini, enCiclo(a, b) ? RUTA_OSC : TEXTO, k);
+        (mini ? enCiclo(a, b) :
+        this.mostrarTodosPesos || !denso || enCiclo(a, b) || a === this.nodoFoco || b === this.nodoFoco);
+      if (visible) etiquetaPeso(ctx, pos[a], pos[b], peso, mini, enCiclo(a, b) ? (color ? oscurecer(color) : RUTA_OSC) : TEXTO, k);
     }
     pos.forEach((p, i) => {
       ctx.beginPath(); ctx.arc(p.x, p.y, radio, 0, 2 * Math.PI);
@@ -523,6 +527,7 @@ class LienzoGrafo {
 }
 
 // ===== ui/Controlador =====
+const puntoCiclo = (color) => (color ? `<span class="punto-ciclo" style="background:${color}"></span>` : "");
 const $ = (id) => document.getElementById(id);
 const on = (id, fn) => $(id).addEventListener("click", fn);
 const aviso = (el, texto, color) => { el.setAttribute("aria-live", "polite"); el.textContent = (color === "red" ? "Error: " : "") + texto; el.style.color = color; };
@@ -716,13 +721,13 @@ class Controlador {
     const ciclos = this.sesion.ciclos;
     this.cicloActual = Math.max(0, Math.min(this.cicloActual, ciclos.length - 1));
     const c = ciclos[this.cicloActual];
-    $("cicloContador").textContent = `Ciclo ${formatoNumero(this.cicloActual + 1)} de ${formatoNumero(ciclos.length)}`;
+    const color = colorDeCiclo(this.cicloActual, ciclos.length);
+    $("cicloContador").innerHTML = `${puntoCiclo(color)}Ciclo ${formatoNumero(this.cicloActual + 1)} de ${formatoNumero(ciclos.length)}`;
     $("cicloRutaTexto").textContent = c.texto();
     $("cicloCostoTexto").textContent = `Costo total: ${c.costo(this.grafo)}`;
     $("btnCicloAnterior").disabled = this.cicloActual === 0;
     $("btnCicloSiguiente").disabled = this.cicloActual === ciclos.length - 1;
-    this.lienzo.ciclos.soloRuta = true;
-    this.lienzo.ciclos.mostrar(this.grafo, { ciclo: c, posiciones: this.#posicionesOriginales() });
+    this.lienzo.ciclos.mostrar(this.grafo, { ciclo: c, color, posiciones: this.#posicionesOriginales() });
   }
   #verGrafo() {
     if (this.sesion.ciclos.length === 0) return aviso($("avisoVerificacion"), "Primero completa el grafo: debe existir al menos un ciclo hamiltoniano.", "red");
@@ -769,16 +774,15 @@ class Controlador {
     this.#pintarFuerza();
   }
   #pintarFuerza() {
-    const f = this.fb, g = this.grafo, c = f.ciclo, k = f.k;
+    const f = this.fb, g = this.grafo, c = f.ciclo, k = f.k, color = colorDeCiclo(f.i, f.ciclos.length);
     $("numeroRuta").textContent = `${f.i + 1} / ${f.ciclos.length}`;
     $("costoActual").textContent = c.costo(g, k);
     $("mejorCostoActual").textContent = f.mejor ? f.mejorCosto : "-";
-    $("rutaActual").innerHTML = `<strong>Ruta en construcción:</strong> ${c.texto(k)}` + (f.rutaCompleta ? `<br><br><strong>Costo total de la ruta:</strong> ${c.costo(g)}` : "");
+    $("rutaActual").innerHTML = `<strong>${puntoCiclo(color)}Ruta en construcción:</strong> ${c.texto(k)}` + (f.rutaCompleta ? `<br><br><strong>Costo total de la ruta:</strong> ${c.costo(g)}` : "");
     $("btnSiguienteRuta").textContent = f.finalizado ? "Ver resultado final" : f.rutaCompleta ? "Ir al siguiente ciclo" : "Siguiente paso";
     $("btnPasoRapido").textContent = $("btnSiguienteRuta").textContent + " →";
     $("btnCompletarRuta").disabled = f.rutaCompleta;
-    this.lienzo.ruta.soloRuta = true;
-    this.lienzo.ruta.mostrar(g, { ciclo: c, k, posiciones: this.#posicionesOriginales() });
+    this.lienzo.ruta.mostrar(g, { ciclo: c, k, color, posiciones: this.#posicionesOriginales() });
   }
   #siguiente() {
     const f = this.fb;
@@ -813,7 +817,7 @@ class Controlador {
       const filas = [];
       for (let i = desde; i < hasta; i++) {
         const costo = f.ciclos[i].costo(g);
-        filas.push(`<tr${costo === f.mejorCosto ? ' class="optimo"' : ""}><td>${i + 1}</td><td>${f.ciclos[i].texto()}</td><td>${costo}</td></tr>`);
+        filas.push(`<tr${costo === f.mejorCosto ? ' class="optimo"' : ""}><td>${puntoCiclo(colorDeCiclo(i, f.ciclos.length))}${i + 1}</td><td>${f.ciclos[i].texto()}</td><td>${costo}</td></tr>`);
       }
       cuerpo.innerHTML = tabla(["Nº", "Ciclo Hamiltoniano", "Costo total"], filas);
     });
@@ -822,7 +826,6 @@ class Controlador {
       tabla(["Nodo", "Entra", "Sale", "Grado interno", "Grado externo"], r.slice(0, -1).map((v, i) =>
         `<tr><td>${nombreNodo(v)}</td><td>${nombreNodo(r[(i + total - 1) % total])} → ${nombreNodo(v)}</td><td>${nombreNodo(v)} → ${nombreNodo(r[i + 1])}</td><td>1</td><td>1</td></tr>`));
     this.nav.ir("Resultado", 7);
-    this.lienzo.resultado.soloRuta = true;
     this.#mostrarOptimo();
     const v = vecinoMasCercano(g);
     const extra = v ? v.costo - f.mejorCosto : null;
@@ -846,15 +849,14 @@ class Controlador {
 
   #mostrarOptimo() {
     if (!this.optimos?.length || !this.grafo) return;
-    const c = this.optimos[this.optimoActual];
+    const c = this.optimos[this.optimoActual], color = colorDeCiclo(this.fb.ciclos.indexOf(c), this.fb.ciclos.length);
     const cantidad = this.optimos.length;
-    $("rutaOptima").innerHTML = `<strong>${cantidad === 1 ? "Ciclo óptimo" : "Ciclos óptimos"} (${cantidad})</strong><br><br><span class="ruta-optima-texto">${c.texto()}</span><br><br>Costo total mínimo: ${this.fb.mejorCosto}`;
+    $("rutaOptima").innerHTML = `<strong>${cantidad === 1 ? "Ciclo óptimo" : "Ciclos óptimos"} (${cantidad})</strong><br><br><span class="ruta-optima-texto">${puntoCiclo(color)}${c.texto()}</span><br><br>Costo total mínimo: ${this.fb.mejorCosto}`;
     $("optimosNavegador").hidden = cantidad < 2;
     $("optimoIndicador").textContent = `${this.optimoActual + 1} de ${cantidad}`;
     $("btnOptimoAnterior").disabled = this.optimoActual === 0;
     $("btnOptimoSiguiente").disabled = this.optimoActual === cantidad - 1;
-    this.lienzo.resultado.soloRuta = true;
-    this.lienzo.resultado.mostrar(this.grafo, { ciclo: c, posiciones: this.#posicionesOriginales() });
+    this.lienzo.resultado.mostrar(this.grafo, { ciclo: c, color, posiciones: this.#posicionesOriginales() });
   }
 
   #enlazar() {

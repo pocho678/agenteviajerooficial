@@ -47,7 +47,7 @@ test('Fuerza bruta y resultado no se habilitan para arrastrar nodos',()=>{
   assert.doesNotMatch(code,/this\.lienzo\.ruta\.habilitarArrastre/);
   assert.doesNotMatch(code,/this\.lienzo\.resultado\.habilitarArrastre/);
   assert.doesNotMatch(code,/this\.lienzo\.ciclos\.habilitarArrastre/);
-  assert.match(code,/this\.lienzo\.ruta\.mostrar\(g, \{ ciclo: c, k, posiciones: this\.#posicionesOriginales\(\) \}\)/);
+  assert.match(code,/this\.lienzo\.ruta\.mostrar\(g, \{ ciclo: c, k, color, posiciones: this\.#posicionesOriginales\(\) \}\)/);
 });
 
 test('Nueva generación y texto de coordenadas iniciales: controles y reglas presentes',()=>{
@@ -67,7 +67,6 @@ test('El visor de ciclos mantiene la disposición original de cada nodo',()=>{
   const g=grafo(), original=g.posiciones.map(p=>({...p}));
   const ciclo={nodos:[0,2,4,1,3,0], texto:()=>"A → C → E → B → D → A"};
   const {view}=lienzo();
-  view.soloRuta=true;
   view.mostrar(g,{ciclo,posiciones:original});
   const posicionesDibujadas=view.pix.map(p=>({x:p.x,y:p.y}));
   const {view:referencia}=lienzo();
@@ -75,7 +74,7 @@ test('El visor de ciclos mantiene la disposición original de cada nodo',()=>{
   assert.deepEqual(posicionesDibujadas, referencia.pix.map(p=>({x:p.x,y:p.y})));
   assert.deepEqual(g.posiciones,original);
   const source=readFileSync(new URL('../src/ui/Controlador.js',import.meta.url),'utf8');
-  assert.match(source,/this\.lienzo\.ciclos\.mostrar\(this\.grafo, \{ ciclo: c, posiciones: this\.#posicionesOriginales\(\) \}\)/);
+  assert.match(source,/this\.lienzo\.ciclos\.mostrar\(this\.grafo, \{ ciclo: c, color, posiciones: this\.#posicionesOriginales\(\) \}\)/);
 });
 
 test('La portada ya no ofrece grafo dirigido ni aparece regenerar en verificación',()=>{
